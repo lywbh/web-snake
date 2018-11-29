@@ -152,8 +152,8 @@ public class SnakeGameMap {
 
     public synchronized String joinGame() {
         Random rand = new Random();
-        int snakeX = rand.nextInt(mapHeight);
-        int snakeY = rand.nextInt(mapWidth);
+        int snakeX = rand.nextInt(mapHeight - 20) + 10;
+        int snakeY = rand.nextInt(mapWidth - 20) + 10;
         Snake newSnake = new Snake(snakeX, snakeY);
         snakes.add(newSnake);
         return newSnake.getId();

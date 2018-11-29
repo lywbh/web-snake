@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
     <title>Title</title>
 </head>
 <body style="text-align: center">
@@ -11,11 +11,12 @@
 <script type="text/javascript" th:inline="javascript">
     var snakeId = [[${snakeId}]];
     var gameMap = document.getElementById("gameMap");
+    var ctx = gameMap.getContext("2d");
 
     var websocket = null;
 
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:8080/snake");
+        websocket = new WebSocket("ws://188.131.188.180:8080/snake");
     } else {
         alert('您的浏览器不支持WebSocket，无法开始游戏')
     }
@@ -37,7 +38,6 @@
     };
 
     websocket.onmessage = function (message) {
-        var ctx = gameMap.getContext("2d");
         ctx.clearRect(0, 0, 500, 500);
         var mapStatus = JSON.parse(message.data);
         for (var i = 0; i < mapStatus.length; i++) {
@@ -58,12 +58,20 @@
     }
 
     gameMap.addEventListener('keydown', doKeyDown, true);
+    gameMap.addEventListener('touchstart', doTouch, true);
     gameMap.focus();
 
     function doKeyDown(e) {
         var keyID = e.keyCode ? e.keyCode : e.which;
         var message = {"snakeId": snakeId, "action": keyID};
         send(JSON.stringify(message));
+    }
+
+    var l = ctx.offsetLeft;
+    var t = ctx.offsetTop;
+
+    function doTouch(e) {
+        // TODO 看看怎么获取坐标
     }
 </script>
 </html>
