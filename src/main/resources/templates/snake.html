@@ -15,7 +15,7 @@
     var websocket = null;
 
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:8080/game/snake");
+        websocket = new WebSocket("ws://localhost:8080/snake");
     } else {
         alert('您的浏览器不支持WebSocket，无法开始游戏')
     }
@@ -42,11 +42,11 @@
         var mapStatus = JSON.parse(message.data);
         for (var i = 0; i < mapStatus.length; i++) {
             for (var j = 0; j < mapStatus[i].length; j++) {
-                if (mapStatus[i][j] === 1) {
-                    ctx.fillStyle = "#0000FF";
-                    ctx.fillRect(j * 5, i * 5, 5, 5);
-                } else if (mapStatus[i][j] === 2) {
+                if (mapStatus[i][j] === 2) {
                     ctx.fillStyle = "#FF0000";
+                    ctx.fillRect(j * 5, i * 5, 5, 5);
+                } else if (mapStatus[i][j] === 1) {
+                    ctx.fillStyle = "#0000FF";
                     ctx.fillRect(j * 5, i * 5, 5, 5);
                 }
             }

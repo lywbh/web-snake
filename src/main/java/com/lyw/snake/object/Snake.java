@@ -1,5 +1,6 @@
-package com.lyw.snake;
+package com.lyw.snake.object;
 
+import com.lyw.snake.object.Point;
 import lombok.Getter;
 import lombok.Setter;
 

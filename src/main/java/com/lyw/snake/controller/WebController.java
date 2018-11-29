@@ -1,5 +1,6 @@
-package com.lyw.snake;
+package com.lyw.snake.controller;
 
+import com.lyw.snake.GameLoop;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

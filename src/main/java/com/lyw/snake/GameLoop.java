@@ -1,6 +1,8 @@
 package com.lyw.snake;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lyw.snake.controller.SnakeHandleSocket;
+import com.lyw.snake.object.SnakeGameMap;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +19,7 @@ public class GameLoop {
         while (true) {
             snakeGameMap.next();
             SnakeHandleSocket.broadcast(JSONObject.toJSONString(snakeGameMap.gameMap));
-            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(200);
         }
     }
 

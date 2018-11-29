@@ -1,6 +1,8 @@
-package com.lyw.snake;
+package com.lyw.snake.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lyw.snake.GameLoop;
+import com.lyw.snake.object.Snake;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -13,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * User: yiweiliang1
  * Date: 2018/11/29
  */
-@ServerEndpoint(value = "/game/snake")
+@ServerEndpoint(value = "/snake")
 @Component
 public class SnakeHandleSocket {
 
@@ -39,7 +41,7 @@ public class SnakeHandleSocket {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) {
+    public void onMessage(String message) {
         JSONObject jsonMsg = JSONObject.parseObject(message);
         String snakeId = jsonMsg.getString("snakeId");
         if (snakeId == null) {
@@ -72,7 +74,7 @@ public class SnakeHandleSocket {
     }
 
     @OnError
-    public void onError(Session session, Throwable error) {
+    public void onError(Throwable error) {
         System.out.println("发生错误");
         error.printStackTrace();
     }

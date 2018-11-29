@@ -1,8 +1,9 @@
-package com.lyw.snake;
+package com.lyw.snake.object;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -34,7 +35,11 @@ public class SnakeGameMap {
     }
 
     public static SnakeGameMap init() {
-        return new SnakeGameMap();
+        SnakeGameMap map = new SnakeGameMap();
+        for (int i = 0; i < 10; ++i) {
+            map.createFood();
+        }
+        return map;
     }
 
     private void clearMap() {
@@ -117,19 +122,23 @@ public class SnakeGameMap {
         // 蛇头食物碰撞检测
         Set<Point> food2Destroy = new HashSet<>();
         for (Snake snake : snakes) {
-            Point head = snake.getBody().get(0);
+            List<Point> snakeBody = snake.getBody();
+            Point head = snakeBody.get(0);
             for (Point foodPoint : foods) {
                 if (head.equals(foodPoint)) {
                     food2Destroy.add(foodPoint);
+                    Point snakeTail = snakeBody.get(snakeBody.size() - 1);
+                    snakeBody.add(new Point(snakeTail.getX(), snakeTail.getY()));
                 }
             }
         }
         for (Point destroy : food2Destroy) {
             foods.remove(destroy);
+            createFood();
         }
     }
 
-    public void drawMap() {
+    private void drawMap() {
         clearMap();
         for (Snake snake : snakes) {
             for (Point body : snake.getBody()) {
@@ -148,6 +157,14 @@ public class SnakeGameMap {
         Snake newSnake = new Snake(snakeX, snakeY);
         snakes.add(newSnake);
         return newSnake.getId();
+    }
+
+    private void createFood() {
+        Random rand = new Random();
+        int foodX = rand.nextInt(mapHeight);
+        int foodY = rand.nextInt(mapWidth);
+        Point food = new Point(foodX, foodY);
+        foods.add(food);
     }
 
     public Snake getSnake(String id) {

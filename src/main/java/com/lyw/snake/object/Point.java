@@ -1,4 +1,4 @@
-package com.lyw.snake;
+package com.lyw.snake.object;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
