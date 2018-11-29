@@ -1,5 +1,7 @@
 package com.lyw.snake;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -14,7 +16,8 @@ public class GameLoop {
     private static void mainLoop() throws InterruptedException {
         while (true) {
             snakeGameMap.next();
-            TimeUnit.SECONDS.sleep(1);
+            SnakeHandleSocket.broadcast(JSONObject.toJSONString(snakeGameMap.gameMap));
+            TimeUnit.MILLISECONDS.sleep(500);
         }
     }
 

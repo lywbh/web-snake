@@ -27,13 +27,14 @@ public class Snake {
 
     private List<Point> body;
     private SnakeConstant direction;
+    private SnakeConstant nextDirection;
 
     public Snake(int headX, int headY) {
-        new Snake(new Point(headX, headY));
+        this(new Point(headX, headY));
     }
 
     private Snake(Point headPoint) {
-        new Snake(headPoint, 4, SnakeConstant.DIRECTION_RIGHT);
+        this(headPoint, 4, SnakeConstant.DIRECTION_RIGHT);
     }
 
     private Snake(Point headPoint, int length, SnakeConstant direction) {
@@ -41,10 +42,11 @@ public class Snake {
         this.body = new ArrayList<>();
         this.body.add(headPoint);
         for (int i = 1; i <= length; ++i) {
-            Point nextBody = new Point(headPoint.getX() - i, headPoint.getY());
+            Point nextBody = new Point(headPoint.getX(), headPoint.getY() - i);
             this.body.add(nextBody);
         }
         this.direction = direction;
+        this.nextDirection = direction;
     }
 
 }

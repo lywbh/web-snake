@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * User: yiweiliang1
  * Date: 2018/11/29
  */
-@ServerEndpoint(value = "/snake")
+@ServerEndpoint(value = "/game/snake")
 @Component
 public class SnakeHandleSocket {
 
@@ -40,34 +40,32 @@ public class SnakeHandleSocket {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("来自客户端的消息:" + message);
         JSONObject jsonMsg = JSONObject.parseObject(message);
-        String snakeId = jsonMsg.getString("id");
+        String snakeId = jsonMsg.getString("snakeId");
         if (snakeId == null) {
-            GameLoop.snakeGameMap.joinGame();
             return;
         }
         Snake mySnake = GameLoop.snakeGameMap.getSnake(snakeId);
-        int action = jsonMsg.getInteger("action");
+        String action = jsonMsg.getString("action");
         switch (action) {
-            case 0:
+            case "38":
                 if (mySnake.getDirection() != Snake.SnakeConstant.DIRECTION_DOWN) {
-                    mySnake.setDirection(Snake.SnakeConstant.DIRECTION_UP);
+                    mySnake.setNextDirection(Snake.SnakeConstant.DIRECTION_UP);
                 }
                 break;
-            case 1:
+            case "39":
                 if (mySnake.getDirection() != Snake.SnakeConstant.DIRECTION_LEFT) {
-                    mySnake.setDirection(Snake.SnakeConstant.DIRECTION_RIGHT);
+                    mySnake.setNextDirection(Snake.SnakeConstant.DIRECTION_RIGHT);
                 }
                 break;
-            case 2:
+            case "40":
                 if (mySnake.getDirection() != Snake.SnakeConstant.DIRECTION_UP) {
-                    mySnake.setDirection(Snake.SnakeConstant.DIRECTION_DOWN);
+                    mySnake.setNextDirection(Snake.SnakeConstant.DIRECTION_DOWN);
                 }
                 break;
-            case 3:
+            case "37":
                 if (mySnake.getDirection() != Snake.SnakeConstant.DIRECTION_RIGHT) {
-                    mySnake.setDirection(Snake.SnakeConstant.DIRECTION_LEFT);
+                    mySnake.setNextDirection(Snake.SnakeConstant.DIRECTION_LEFT);
                 }
                 break;
         }
@@ -80,8 +78,18 @@ public class SnakeHandleSocket {
     }
 
 
-    private void sendMessage(String message) throws IOException {
+    private void send(String message) throws IOException {
         this.session.getBasicRemote().sendText(message);
+    }
+
+    public static void broadcast(String message) {
+        for (SnakeHandleSocket item : socketSet) {
+            try {
+                item.send(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static synchronized int getOnlineCount() {

@@ -15,8 +15,8 @@ public class SnakeGameMap {
 
     public static class MapConstant {
         static int EMPTY_BLOCK = 0;
-        static int FOOD_BLOCK = 1;
-        static int SNAKE_BLOCK = 2;
+        static int SNAKE_BLOCK = 1;
+        static int FOOD_BLOCK = 2;
     }
 
     private static int mapWidth = 100;
@@ -28,11 +28,7 @@ public class SnakeGameMap {
 
     private SnakeGameMap() {
         gameMap = new int[mapWidth][mapHeight];
-        for (int i = 0; i < mapWidth; ++i) {
-            for (int j = 0; j < mapHeight; ++j) {
-                gameMap[i][j] = MapConstant.EMPTY_BLOCK;
-            }
-        }
+        clearMap();
         snakes = new HashSet<>();
         foods = new HashSet<>();
     }
@@ -41,19 +37,29 @@ public class SnakeGameMap {
         return new SnakeGameMap();
     }
 
+    private void clearMap() {
+        for (int i = 0; i < mapWidth; ++i) {
+            for (int j = 0; j < mapHeight; ++j) {
+                gameMap[i][j] = MapConstant.EMPTY_BLOCK;
+            }
+        }
+    }
+
     public synchronized void next() {
         // 根据snakes和foods，计算下一帧地图上的情况，生成新的gameMap
         snakesMove();
         snakeImpactDetect();
         foodEatDetect();
+        drawMap();
     }
 
     private void snakesMove() {
         // 所有的蛇前进一格
         for (Snake snake : snakes) {
-            for (int i = 0; i < snake.getBody().size() - 1; ++i) {
-                Point forward = snake.getBody().get(i);
-                Point backward = snake.getBody().get(i + 1);
+            snake.setDirection(snake.getNextDirection());
+            for (int i = snake.getBody().size() - 1; i > 0; --i) {
+                Point forward = snake.getBody().get(i - 1);
+                Point backward = snake.getBody().get(i);
                 backward.setX(forward.getX());
                 backward.setY(forward.getY());
             }
@@ -80,6 +86,10 @@ public class SnakeGameMap {
         Set<Snake> snake2Destroy = new HashSet<>();
         for (Snake snake : snakes) {
             Point head = snake.getBody().get(0);
+            // 判断是否撞到边界
+            if (head.getX() < 0 || head.getX() >= mapWidth || head.getY() < 0 || head.getY() >= mapHeight) {
+                snake2Destroy.add(snake);
+            }
             // 判断是否撞到自己
             for (int i = 1; i < snake.getBody().size(); ++i) {
                 if (head.equals(snake.getBody().get(i))) {
@@ -114,8 +124,20 @@ public class SnakeGameMap {
                 }
             }
         }
-        for (Point destroy: food2Destroy) {
+        for (Point destroy : food2Destroy) {
             foods.remove(destroy);
+        }
+    }
+
+    public void drawMap() {
+        clearMap();
+        for (Snake snake : snakes) {
+            for (Point body : snake.getBody()) {
+                gameMap[body.getX()][body.getY()] = MapConstant.SNAKE_BLOCK;
+            }
+        }
+        for (Point food : foods) {
+            gameMap[food.getX()][food.getY()] = MapConstant.FOOD_BLOCK;
         }
     }
 
