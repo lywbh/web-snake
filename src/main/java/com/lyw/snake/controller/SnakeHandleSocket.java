@@ -3,11 +3,13 @@ package com.lyw.snake.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.lyw.snake.GameLoop;
 import com.lyw.snake.object.Snake;
+import com.lyw.snake.utils.AsyncTaskUtils;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -44,10 +46,10 @@ public class SnakeHandleSocket {
     public void onMessage(String message) {
         JSONObject jsonMsg = JSONObject.parseObject(message);
         String snakeId = jsonMsg.getString("snakeId");
-        if (snakeId == null) {
+        Snake mySnake = GameLoop.snakeGameMap.getSnake(snakeId);
+        if (mySnake == null) {
             return;
         }
-        Snake mySnake = GameLoop.snakeGameMap.getSnake(snakeId);
         String action = jsonMsg.getString("action");
         switch (action) {
             case "38":
@@ -84,13 +86,22 @@ public class SnakeHandleSocket {
         this.session.getBasicRemote().sendText(message);
     }
 
+    private void sendAsync(String message) {
+        AsyncTaskUtils.run(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    send(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public static void broadcast(String message) {
         for (SnakeHandleSocket item : socketSet) {
-            try {
-                item.send(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            item.sendAsync(message);
         }
     }
 

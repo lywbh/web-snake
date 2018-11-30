@@ -19,7 +19,7 @@ public class GameLoop {
         while (true) {
             snakeGameMap.next();
             SnakeHandleSocket.broadcast(JSONObject.toJSONString(snakeGameMap.gameMap));
-            TimeUnit.MILLISECONDS.sleep(200);
+            TimeUnit.MILLISECONDS.sleep(100);
         }
     }
 

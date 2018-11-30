@@ -50,7 +50,7 @@ public class SnakeGameMap {
         }
     }
 
-    public synchronized void next() {
+    public void next() {
         // 根据snakes和foods，计算下一帧地图上的情况，生成新的gameMap
         snakesMove();
         snakeImpactDetect();
