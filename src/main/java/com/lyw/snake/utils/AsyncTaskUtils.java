@@ -5,7 +5,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by CreditEase.
+ * Created by lyw.
  * User: yiweiliang1
  * Date: 2018/8/9
  */
