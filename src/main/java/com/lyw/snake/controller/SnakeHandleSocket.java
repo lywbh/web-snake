@@ -3,13 +3,10 @@ package com.lyw.snake.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.lyw.snake.GameLoop;
 import com.lyw.snake.object.Snake;
-import com.lyw.snake.utils.AsyncTaskUtils;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
-import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -81,21 +78,12 @@ public class SnakeHandleSocket {
         error.printStackTrace();
     }
 
-    private void send(String message) throws IOException {
-        this.session.getBasicRemote().sendText(message);
-    }
-
     private void sendAsync(String message) {
-        AsyncTaskUtils.run(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    send(message);
-                } catch (Exception ignore) {
-                    //发送失败就算了，直接把消息扔掉
-                }
-            }
-        });
+        try {
+            this.session.getAsyncRemote().sendText(message);
+        } catch (Exception e) {
+            // 发送失败的话直接忽略
+        }
     }
 
     public static void broadcast(String message) {
