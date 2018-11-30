@@ -1,6 +1,5 @@
 package com.lyw.snake.object;
 
-import com.lyw.snake.object.Point;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,6 +47,31 @@ public class Snake {
         }
         this.direction = direction;
         this.nextDirection = direction;
+    }
+
+    public void move() {
+        direction = nextDirection;
+        for (int i = body.size() - 1; i > 0; --i) {
+            Point forward = body.get(i - 1);
+            Point backward = body.get(i);
+            backward.setX(forward.getX());
+            backward.setY(forward.getY());
+        }
+        Point head = body.get(0);
+        switch (direction) {
+            case DIRECTION_UP:
+                head.setX(head.getX() - 1);
+                break;
+            case DIRECTION_RIGHT:
+                head.setY(head.getY() + 1);
+                break;
+            case DIRECTION_DOWN:
+                head.setX(head.getX() + 1);
+                break;
+            case DIRECTION_LEFT:
+                head.setY(head.getY() - 1);
+                break;
+        }
     }
 
 }

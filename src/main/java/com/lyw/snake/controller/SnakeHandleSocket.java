@@ -81,7 +81,6 @@ public class SnakeHandleSocket {
         error.printStackTrace();
     }
 
-
     private void send(String message) throws IOException {
         this.session.getBasicRemote().sendText(message);
     }
@@ -92,8 +91,8 @@ public class SnakeHandleSocket {
             public void run() {
                 try {
                     send(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception ignore) {
+                    //发送失败就算了，直接把消息扔掉
                 }
             }
         });

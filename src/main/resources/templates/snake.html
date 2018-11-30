@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-    <title>Title</title>
+    <title>Web贪吃蛇</title>
 </head>
 <body style="text-align: center">
 <canvas id="gameMap" width="500" height="500" tabindex="0" style="border:1px solid #000000;">不支持canvas</canvas>
@@ -10,23 +10,23 @@
     <tr>
         <td></td>
         <td>
-            <button onclick="doDirection('38')" style="width: 50px; height: 50px; border: none">↑</button>
+            <input type="button" value="↑" onclick="doDirection('38')" style="width: 50px; height: 50px; border: none">
         </td>
         <td></td>
     </tr>
     <tr>
         <td>
-            <button onclick="doDirection('37')" style="width: 50px; height: 50px; border: none">←</button>
+            <input type="button" value="←" onclick="doDirection('37')" style="width: 50px; height: 50px; border: none">
         </td>
         <td></td>
         <td>
-            <button onclick="doDirection('39')" style="width: 50px; height: 50px; border: none">→</button>
+            <input type="button" value="→" onclick="doDirection('39')" style="width: 50px; height: 50px; border: none">
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <button onclick="doDirection('40')" style="width: 50px; height: 50px; border: none">↓</button>
+            <input type="button" value="↓" onclick="doDirection('40')" style="width: 50px; height: 50px; border: none">
         </td>
         <td></td>
     </tr>

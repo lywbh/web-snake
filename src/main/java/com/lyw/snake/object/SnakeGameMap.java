@@ -2,10 +2,7 @@ package com.lyw.snake.object;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lyw.
@@ -36,7 +33,7 @@ public class SnakeGameMap {
 
     public static SnakeGameMap init() {
         SnakeGameMap map = new SnakeGameMap();
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 30; ++i) {
             map.createFood();
         }
         return map;
@@ -52,38 +49,10 @@ public class SnakeGameMap {
 
     public void next() {
         // 根据snakes和foods，计算下一帧地图上的情况，生成新的gameMap
-        snakesMove();
+        snakes.forEach(Snake::move);
         snakeImpactDetect();
         foodEatDetect();
         drawMap();
-    }
-
-    private void snakesMove() {
-        // 所有的蛇前进一格
-        for (Snake snake : snakes) {
-            snake.setDirection(snake.getNextDirection());
-            for (int i = snake.getBody().size() - 1; i > 0; --i) {
-                Point forward = snake.getBody().get(i - 1);
-                Point backward = snake.getBody().get(i);
-                backward.setX(forward.getX());
-                backward.setY(forward.getY());
-            }
-            Point head = snake.getBody().get(0);
-            switch (snake.getDirection()) {
-                case DIRECTION_UP:
-                    head.setX(head.getX() - 1);
-                    break;
-                case DIRECTION_RIGHT:
-                    head.setY(head.getY() + 1);
-                    break;
-                case DIRECTION_DOWN:
-                    head.setX(head.getX() + 1);
-                    break;
-                case DIRECTION_LEFT:
-                    head.setY(head.getY() - 1);
-                    break;
-            }
-        }
     }
 
     private void snakeImpactDetect() {
@@ -102,13 +71,35 @@ public class SnakeGameMap {
                 }
             }
             // 判断是否撞到别人
+            Map<Snake, Snake> winLose = new HashMap<>();
             for (Snake snakeOther : snakes) {
                 if (snakeOther != snake) {
                     for (Point otherBody : snakeOther.getBody()) {
                         if (head.equals(otherBody)) {
-                            snake2Destroy.add(snake);
+                            if (snake.getBody().size() > snakeOther.getBody().size()) {
+                                // 自己比较长，把对方吃了
+                                snake2Destroy.add(snakeOther);
+                                winLose.put(snake, snakeOther);
+                            } else if (snake.getBody().size() < snakeOther.getBody().size()) {
+                                // 自己比较短，被吃了
+                                snake2Destroy.add(snake);
+                                winLose.put(snakeOther, snake);
+                            } else {
+                                // 一样长，同归于尽
+                                snake2Destroy.add(snake);
+                                snake2Destroy.add(snakeOther);
+                            }
                         }
                     }
+                }
+            }
+            // 胜者获得败者的长度
+            for (Map.Entry<Snake, Snake> wl : winLose.entrySet()) {
+                Snake win = wl.getKey();
+                Snake lose = wl.getValue();
+                Point winTail = win.getBody().get(win.getBody().size() - 1);
+                for (int i = 0; i < lose.getBody().size(); ++i) {
+                    win.getBody().add(new Point(winTail.getX(), winTail.getY()));
                 }
             }
         }
@@ -123,9 +114,8 @@ public class SnakeGameMap {
         Set<Point> food2Destroy = new HashSet<>();
         for (Snake snake : snakes) {
             List<Point> snakeBody = snake.getBody();
-            Point head = snakeBody.get(0);
             for (Point foodPoint : foods) {
-                if (head.equals(foodPoint)) {
+                if (foodPoint.equals(snakeBody.get(0))) {
                     food2Destroy.add(foodPoint);
                     Point snakeTail = snakeBody.get(snakeBody.size() - 1);
                     snakeBody.add(new Point(snakeTail.getX(), snakeTail.getY()));
