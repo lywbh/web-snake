@@ -69,7 +69,7 @@
     var websocket = null;
 
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://188.131.188.180:8080/snake");
+        websocket = new WebSocket("ws://" + location.host + "/snake");
     } else {
         alert('您的浏览器不支持WebSocket，无法开始游戏')
     }
